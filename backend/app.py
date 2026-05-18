@@ -3,25 +3,6 @@
 """
 import os
 import sys
-import ssl
-import urllib3
-
-# Patch ssl FIRST before any other imports
-ssl._create_default_https_context = ssl._create_unverified_context
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-# Monkey-patch httpx to skip SSL verification at import time
-try:
-    import httpx._config as _httpx_config
-    def _patched_ssl(*args, **kwargs):
-        ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        return ctx
-    _httpx_config.create_ssl_context = _patched_ssl
-except Exception:
-    pass
-
 from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware

@@ -2,13 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Disable SSL verification globally before any Python imports
+# Disable SSL verification globally - MUST be set before Python starts
 ENV SSL_VERIFY=false \
     PYTHONHTTPSVERIFY=0 \
     REQUESTS_CA_BUNDLE="" \
     CURL_CA_BUNDLE="" \
     SSL_CERT_FILE="" \
-    HTTPX_VERIFY=false
+    HTTPX_VERIFY=false \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -34,6 +36,10 @@ RUN uv sync --no-dev --frozen
 COPY src/ src/
 COPY backend/ backend/
 COPY knowledge/ knowledge/
+COPY backend/sitecustomize.py /app/
+
+# Set PYTHONPATH so sitecustomize.py is loaded at startup
+ENV PYTHONPATH=/app:$PYTHONPATH
 
 # Expose API port
 EXPOSE 8000
