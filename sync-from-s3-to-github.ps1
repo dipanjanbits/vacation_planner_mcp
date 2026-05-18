@@ -43,11 +43,7 @@ $syncDir = Join-Path $env:TEMP "s3-sync-$(Get-Random)"
 New-Item -ItemType Directory -Path $syncDir | Out-Null
 
 aws s3 sync "s3://$S3_BUCKET/$S3_PATH/" $syncDir `
-    --region us-west-2 `
-    --exclude ".git/*" `
-    --exclude ".github/*" `
-    --exclude ".env" `
-    --exclude "*.log"
+    --region us-west-2
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "❌ S3 sync failed"
@@ -56,10 +52,10 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "✅ Downloaded from S3 to temp directory"
 
-# Step 3: Merge with local (keep local .git, .env, logs)
+# Step 3: Merge with local (copy everything from S3)
 Write-Host ""
-Write-Host "Step 3️⃣  Merging S3 files with local (preserving git, .env, logs)..."
-Copy-Item -Path "$syncDir/*" -Destination $LOCAL_PATH -Recurse -Force -Exclude @(".git", ".env*", "*.log")
+Write-Host "Step 3️⃣  Merging S3 files with local..."
+Copy-Item -Path "$syncDir/*" -Destination $LOCAL_PATH -Recurse -Force
 Remove-Item -Path $syncDir -Recurse -Force
 
 Write-Host "✅ Files merged"

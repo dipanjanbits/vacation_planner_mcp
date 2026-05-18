@@ -17,12 +17,9 @@ Write-Host "📁 Local path: $LOCAL_PATH"
 Write-Host "📦 S3 source: s3://$S3_BUCKET/$S3_PATH/"
 Write-Host ""
 
-Write-Host "⬇️  Syncing from S3 (keeping .git, .env, logs local)..."
+Write-Host "⬇️  Syncing from S3..."
 aws s3 sync "s3://$S3_BUCKET/$S3_PATH/" $LOCAL_PATH `
     --region us-west-2 `
-    --exclude ".git/*" `
-    --exclude ".env*" `
-    --exclude "*.log" `
     --delete
 
 if ($LASTEXITCODE -ne 0) {

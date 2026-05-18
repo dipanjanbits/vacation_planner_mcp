@@ -64,20 +64,7 @@ jobs:
         if: env.S3_BUCKET != ''
         run: |
           echo "Syncing app files to s3://$S3_BUCKET/$S3_SYNC_PATH/"
-          aws s3 sync . s3://$S3_BUCKET/$S3_SYNC_PATH/ \
-            --exclude ".git/*" \
-            --exclude ".github/*" \
-            --exclude "Dockerfile" \
-            --exclude ".gitignore" \
-            --exclude "uv.lock" \
-            --exclude "pyproject.toml" \
-            --exclude "README.md" \
-            --exclude "report.md" \
-            --exclude "detailed_itinerary.md" \
-            --exclude "*.pyc" \
-            --exclude "__pycache__/*" \
-            --exclude "*.log" \
-            --delete
+          aws s3 sync . s3://$S3_BUCKET/$S3_SYNC_PATH/ --delete
 
       - name: Create ECS Cluster if not exists
         run: |

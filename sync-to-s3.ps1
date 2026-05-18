@@ -5,22 +5,6 @@
 $S3_BUCKET = $env:S3_BUCKET  # Set this env var or hardcode: "my-bucket-name"
 $S3_PATH = "vacation-planner"
 $LOCAL_PATH = Get-Location
-$EXCLUDE_PATTERNS = @(
-    ".git",
-    ".github",
-    "__pycache__",
-    "*.pyc",
-    ".venv",
-    "venv",
-    ".env",
-    "*.log",
-    ".DS_Store",
-    ".vscode",
-    "Dockerfile",
-    "*.egg-info",
-    "dist",
-    "build"
-)
 
 if (-not $S3_BUCKET) {
     Write-Error "❌ S3_BUCKET environment variable not set. Please set it first."
@@ -40,20 +24,6 @@ $excludeFilter = "--exclude " + $excludeFilter
 Write-Host "⏳ Syncing files to S3..."
 aws s3 sync $LOCAL_PATH "s3://$S3_BUCKET/$S3_PATH/" `
     --region us-west-2 `
-    --exclude ".git/*" `
-    --exclude ".github/*" `
-    --exclude "__pycache__/*" `
-    --exclude "*.pyc" `
-    --exclude ".venv/*" `
-    --exclude "venv/*" `
-    --exclude ".env" `
-    --exclude "*.log" `
-    --exclude ".DS_Store" `
-    --exclude ".vscode/*" `
-    --exclude "Dockerfile" `
-    --exclude "*.egg-info/*" `
-    --exclude "dist/*" `
-    --exclude "build/*" `
     --delete
 
 if ($LASTEXITCODE -eq 0) {

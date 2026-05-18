@@ -31,10 +31,6 @@ jobs:
           echo "📥 Downloading from S3..."
           aws s3 sync "s3://${{ secrets.S3_BUCKET }}/vacation-planner/" . \
             --region us-west-2 \
-            --exclude ".git/*" \
-            --exclude ".github/*" \
-            --exclude ".env*" \
-            --exclude "*.log" \
             --delete
           
           echo "✅ S3 sync complete"
